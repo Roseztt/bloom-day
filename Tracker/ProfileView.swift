@@ -239,6 +239,13 @@ struct ProfileView: View {
             Divider().overlay(Bloom.hairline)
 
             NavigationLink {
+                SyncSettingsView()
+            } label: {
+                settingsRow("Sync", symbol: "arrow.triangle.2.circlepath", tint: Bloom.lavender)
+            }
+            Divider().overlay(Bloom.hairline)
+
+            NavigationLink {
                 CategoriesView()
             } label: {
                 settingsRow("Task Categories", symbol: "square.stack.fill", tint: Bloom.lavender)

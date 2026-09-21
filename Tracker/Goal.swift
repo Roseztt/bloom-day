@@ -14,6 +14,7 @@ final class Goal {
     var currentCount: Int = 0
     var statusRaw: Int = GoalStatus.inProgress.rawValue
     var createdAt: Date = Date()
+    var updatedAt: Date = Date()
     var isArchived: Bool = false
 
     init(
@@ -30,6 +31,7 @@ final class Goal {
         self.currentCount = currentCount
         self.statusRaw = status.rawValue
         self.createdAt = Date()
+        self.updatedAt = Date()
         self.isArchived = false
     }
 }

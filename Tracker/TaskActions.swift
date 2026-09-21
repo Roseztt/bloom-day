@@ -9,15 +9,20 @@ enum TaskActions {
         task.completedAt = task.isCompleted ? nil : Date()
         task.snoozedUntil = nil
         if task.isCompleted { task.startedAt = nil }
+        task.updatedAt = Date()
         persist(context)
     }
 
     static func toggleStarted(_ task: TaskItem, context: ModelContext) {
         task.startedAt = task.startedAt == nil ? Date() : nil
+        task.updatedAt = Date()
         persist(context)
     }
 
     static func delete(_ task: TaskItem, context: ModelContext) {
+        // Tombstone first, so sync doesn't resurrect it from another device.
+        SyncEngine.shared.recordDeletion(task.uid.uuidString)
+        (task.steps ?? []).forEach { SyncEngine.shared.recordDeletion($0.uid.uuidString) }
         context.delete(task)
         persist(context)
     }
@@ -36,6 +41,7 @@ enum TaskActions {
             leadMinutes: SettingsStore.shared.defaultLeadMinutes
         )
         task.calendarEventID = event.id
+        task.updatedAt = Date()
         context.insert(task)
         persist(context)
         return task
@@ -51,6 +57,7 @@ enum TaskActions {
         step.task = task
         context.insert(step)
         task.steps = (task.steps ?? []) + [step]
+        task.updatedAt = Date()
         persist(context)
     }
 
@@ -59,6 +66,7 @@ enum TaskActions {
     static func toggleStep(_ step: TaskStep, context: ModelContext) {
         step.isDone.toggle()
         step.completedAt = step.isDone ? Date() : nil
+        step.updatedAt = Date()
 
         if let task = step.task, task.stepCount > 0 {
             let allDone = task.completedStepCount == task.stepCount
@@ -66,8 +74,10 @@ enum TaskActions {
                 task.completedAt = Date()
                 task.startedAt = nil
                 task.snoozedUntil = nil
+                task.updatedAt = Date()
             } else if !allDone && task.isCompleted {
                 task.completedAt = nil
+                task.updatedAt = Date()
             }
         }
 
@@ -75,7 +85,9 @@ enum TaskActions {
     }
 
     static func deleteStep(_ step: TaskStep, context: ModelContext) {
+        SyncEngine.shared.recordDeletion(step.uid.uuidString)
         if let task = step.task {
+            task.updatedAt = Date()
             task.steps = (task.steps ?? []).filter { $0.persistentModelID != step.persistentModelID }
         }
         context.delete(step)
@@ -85,6 +97,7 @@ enum TaskActions {
     static func reorderSteps(_ ordered: [TaskStep], context: ModelContext) {
         for (index, step) in ordered.enumerated() {
             step.order = index
+            step.updatedAt = Date()
         }
         persist(context)
     }

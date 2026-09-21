@@ -199,6 +199,7 @@ struct TaskEditorView: View {
         target.nagWhenOverdue = nagWhenOverdue
         // Editing a task means the user is thinking about it again — drop any snooze.
         target.snoozedUntil = nil
+        target.updatedAt = Date()
 
         try? context.save()
         NotificationManager.shared.refreshSchedule()

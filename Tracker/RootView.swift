@@ -45,6 +45,7 @@ struct RootView: View {
             // Refresh the calendar cache first so the schedule below can see it.
             CalendarBridge.shared.reload()
             NotificationManager.shared.refreshSchedule()
+            await SyncEngine.shared.syncIfConfigured()
         }
         .onChange(of: scenePhase) { _, phase in
             // Rebuild on the way in and on the way out, so the schedule reflects
@@ -52,6 +53,7 @@ struct RootView: View {
             if phase == .active || phase == .background {
                 CalendarBridge.shared.reload()
                 NotificationManager.shared.refreshSchedule()
+                Task { await SyncEngine.shared.syncIfConfigured() }
             }
         }
     }

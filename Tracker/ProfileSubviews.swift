@@ -109,6 +109,7 @@ struct GoalEditorView: View {
                     Section {
                         Button("Delete goal", role: .destructive) {
                             if let goal {
+                                SyncEngine.shared.recordDeletion(goal.uid.uuidString)
                                 context.delete(goal)
                                 try? context.save()
                             }
@@ -160,6 +161,7 @@ struct GoalEditorView: View {
         target.status = isCounted
             ? (currentCount >= targetCount ? .achieved : .inProgress)
             : status
+        target.updatedAt = Date()
 
         try? context.save()
         dismiss()

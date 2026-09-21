@@ -36,6 +36,8 @@ final class TaskItem {
     var notes: String = ""
     var dueDate: Date?
     var createdAt: Date = Date()
+    /// Bumped on every edit. Sync uses it to decide which device's copy wins.
+    var updatedAt: Date = Date()
     var completedAt: Date?
     var startedAt: Date?
     var snoozedUntil: Date?
@@ -71,6 +73,7 @@ final class TaskItem {
         self.notes = notes
         self.dueDate = dueDate
         self.createdAt = Date()
+        self.updatedAt = Date()
         self.completedAt = nil
         self.startedAt = nil
         self.snoozedUntil = nil

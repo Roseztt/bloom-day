@@ -8,7 +8,10 @@ final class TaskStep {
     var isDone: Bool = false
     /// Position in the list. Kept explicit so reordering survives relaunches.
     var order: Int = 0
+    /// Stable across devices, so sync can match this step to its twin.
+    var uid: UUID = UUID()
     var createdAt: Date = Date()
+    var updatedAt: Date = Date()
     var completedAt: Date?
 
     var task: TaskItem?
@@ -18,6 +21,8 @@ final class TaskStep {
         self.isDone = false
         self.order = order
         self.createdAt = Date()
+        self.updatedAt = Date()
+        self.uid = UUID()
     }
 }
 

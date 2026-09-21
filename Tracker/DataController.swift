@@ -45,12 +45,14 @@ final class DataController {
         guard let task = task(uid: uid) else { return }
         task.completedAt = Date()
         task.snoozedUntil = nil
+        task.updatedAt = Date()
         save()
     }
 
     func snoozeTask(uid: String, hours: Int) {
         guard let task = task(uid: uid) else { return }
         task.snoozedUntil = Date().addingTimeInterval(Double(max(1, hours)) * 3600)
+        task.updatedAt = Date()
         save()
     }
 
@@ -62,7 +64,10 @@ final class DataController {
             guard let completedAt = task.completedAt else { return false }
             return completedAt < cutoff
         }
-        stale.forEach { context.delete($0) }
+        stale.forEach {
+            SyncEngine.shared.recordDeletion($0.uid.uuidString)
+            context.delete($0)
+        }
         save()
         return stale.count
     }
