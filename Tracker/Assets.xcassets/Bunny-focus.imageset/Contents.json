@@ -1,0 +1,6 @@
+{
+  "images" : [
+    { "idiom" : "universal", "scale" : "2x", "filename" : "bunny-focus@2x.png" }
+  ],
+  "info" : { "author" : "xcode", "version" : 1 }
+}
