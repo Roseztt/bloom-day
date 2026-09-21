@@ -73,7 +73,7 @@ Two deliberate limits on event reminders: **all-day entries are skipped** (a not
 
 All of it is tunable in Profile → Reminder Settings.
 
-## Things that are real, not decorative
+## Features
 
 Every number in the app is computed from your actual task history:
 
